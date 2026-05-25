@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณค่าข้าว</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <div class="container">
+        <center><h1>แชร์ดิ</h1></center>
+
+        <!-- ฟอร์มกรอกข้อมูล -->
+        <form action="/calculate" method="POST">
+            <h2>รายการอาหาร</h2>
+            <div id="food-list">
+                <div class="food-item">
+                    <label style="font-size:16px;">อาหาร:</label>
+                    <input type="text" name="food[]" placeholder="ชื่ออาหาร">
+                    <input type="number" name="price[]" placeholder="ราคา">
+                    <button type="button" id="add-food-btn" style="font-size:16px;">เพิ่ม</button>
+                </div>
+            </div>
+            
+
+            <h2>ใครกินบ้าง?</h2>
+            <div id="participants-list">
+                <div class="participant-item">
+                    <label style="font-size:16px;">ชื่อผู้ทาน:</label>
+                    <input type="text" name="participant[]" placeholder="ชื่อผู้ทาน">
+                    <input type="text" name="foods[]" placeholder="รายการอาหาร (คั่นด้วย ,)">
+                    <button type="button" id="add-participant-btn" style="font-size:16px;">เพิ่ม</button>
+                </div>
+            </div>
+            
+
+            <center><br></bl><button type="submit" style="font-size:20px;">คำนวณผลลัพธ์</button></center>
+        </form>
+
+        <!-- แสดงผลลัพธ์ -->
+        {% if result %}
+        <h3>ผลลัพธ์:</h3>
+        <ul>
+            {% for name, cost in result.items() %}
+            <li>{{ name }} ต้องจ่าย {{ cost | round(2) }} บาท</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <script>
+        let foodCount = 1;
+        let participantCount = 1;
+
+        document.getElementById('add-food-btn').addEventListener('click', function() {
+            foodCount++;
+            let newFood = document.createElement('div');
+            newFood.classList.add('food-item');
+            newFood.innerHTML = `
+                <label>อาหาร ${foodCount}:</label>
+                <input type="text" name="food[]" placeholder="ชื่ออาหาร">
+                <input type="number" name="price[]" placeholder="ราคา">
+            `;
+            document.getElementById('food-list').appendChild(newFood);
+        });
+
+        document.getElementById('add-participant-btn').addEventListener('click', function() {
+            participantCount++;
+            let newParticipant = document.createElement('div');
+            newParticipant.classList.add('participant-item');
+            newParticipant.innerHTML = `
+                <label>ชื่อผู้ทาน ${participantCount}:</label>
+                <input type="text" name="participant[]" placeholder="ชื่อผู้ทาน">
+                <input type="text" name="foods[]" placeholder="รายการอาหาร (คั่นด้วย ,)">
+            `;
+            document.getElementById('participants-list').appendChild(newParticipant);
+        });
+    </script>
+</body>
+</html>
